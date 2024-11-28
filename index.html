@@ -4,158 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Punto de Venta - Nutrimovil</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Si tienes un archivo CSS -->
     <style>
+        /* Estilo general */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 0;
         }
 
+        /* Encabezado con imagen a la derecha */
         header {
+            display: flex;
+            justify-content: space-between; /* Espacia los elementos a los extremos */
+            align-items: center; /* Alinea verticalmente los elementos */
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        header img {
+            max-width: 150px; /* Ajusta el tamaño de la imagen */
+            height: auto;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        /* Caja del punto de venta */
+        .venta-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .venta-container h2 {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .product-list, .cart {
-            margin: 20px 0;
-        }
-
-        .product-list button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .product-list button:hover {
-            background-color: #45a049;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid black;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        .total {
-            text-align: right;
+        .venta-container label {
+            display: block;
             margin-top: 10px;
         }
 
-        .total span {
-            font-weight: bold;
+        .venta-container input, .venta-container select, .venta-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        button.finalize {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #007BFF;
+        .venta-container button {
+            background-color: #28a745;
             color: white;
             border: none;
             cursor: pointer;
+            font-size: 16px;
         }
 
-        button.finalize:hover {
-            background-color: #0056b3;
+        .venta-container button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
+    <!-- Encabezado con logo -->
     <header>
         <h1>Punto de Venta - Nutrimovil</h1>
+        <img src="logoN.jpg" alt="Logo Nutrimovil">
     </header>
 
-    <!-- Lista de productos -->
-    <section class="product-list">
-        <h2>Productos</h2>
-        <button onclick="addToCart('Baguette', 50)">Baguette - $50</button>
-        <button onclick="addToCart('Torta', 40)">Torta - $40</button>
-        <button onclick="addToCart('Burrito', 30)">Burrito - $30</button>
-    </section>
+    <!-- Contenedor del sistema de punto de venta -->
+    <div class="venta-container">
+        <h2>Registrar Venta</h2>
+        <form>
+            <label for="producto">Producto:</label>
+            <select id="producto" name="producto">
+                <option value="baguette">Baguette</option>
+                <option value="torta">Torta</option>
+                <option value="burrito">Burrito</option>
+            </select>
 
-    <!-- Carrito de compras -->
-    <section class="cart">
-        <h2>Carrito de Compras</h2>
-        <table id="cart-table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Las filas del carrito aparecerán aquí -->
-            </tbody>
-        </table>
-        <div class="total">
-            Total: $<span id="total-price">0</span>
-        </div>
-        <button class="finalize" onclick="finalizeSale()">Finalizar Venta</button>
-    </section>
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="cantidad" name="cantidad" min="1" value="1">
 
-    <script>
-        const cart = [];
+            <label for="precio">Precio Unitario:</label>
+            <input type="text" id="precio" name="precio" placeholder="$0.00">
 
-        function addToCart(product, price) {
-            // Busca si el producto ya está en el carrito
-            const existingProduct = cart.find(item => item.name === product);
-            if (existingProduct) {
-                existingProduct.quantity++;
-                existingProduct.total = existingProduct.quantity * existingProduct.price;
-            } else {
-                cart.push({ name: product, price: price, quantity: 1, total: price });
-            }
-            updateCart();
-        }
+            <label for="total">Total:</label>
+            <input type="text" id="total" name="total" readonly placeholder="$0.00">
 
-        function updateCart() {
-            const tableBody = document.getElementById('cart-table').querySelector('tbody');
-            tableBody.innerHTML = ''; // Limpia el contenido actual
-            let totalPrice = 0;
-
-            cart.forEach((item, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>$${item.price}</td>
-                    <td>${item.quantity}</td>
-                    <td>$${item.total}</td>
-                    <td><button onclick="removeFromCart(${index})">Eliminar</button></td>
-                `;
-                tableBody.appendChild(row);
-                totalPrice += item.total;
-            });
-
-            document.getElementById('total-price').innerText = totalPrice.toFixed(2);
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1); // Elimina el producto del carrito
-            updateCart();
-        }
-
-        function finalizeSale() {
-            if (cart.length === 0) {
-                alert('El carrito está vacío.');
-                return;
-            }
-            alert(`Venta finalizada. Total a pagar: $${document.getElementById('total-price').innerText}`);
-            cart.length = 0; // Vacía el carrito
-            updateCart();
-        }
-    </script>
+            <button type="button">Registrar Venta</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Nutrimovil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-list, .cart {
+            margin: 20px 0;
+        }
+
+        .product-list button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .product-list button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .total span {
+            font-weight: bold;
+        }
+
+        button.finalize {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button.finalize:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Punto de Venta - Nutrimovil</h1>
+    </header>
+
+    <!-- Lista de productos -->
+    <section class="product-list">
+        <h2>Productos</h2>
+        <button onclick="addToCart('Baguette', 50)">Baguette - $50</button>
+        <button onclick="addToCart('Torta', 40)">Torta - $40</button>
+        <button onclick="addToCart('Burrito', 30)">Burrito - $30</button>
+    </section>
+
+    <!-- Carrito de compras -->
+    <section class="cart">
+        <h2>Carrito de Compras</h2>
+        <table id="cart-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas del carrito aparecerán aquí -->
+            </tbody>
+        </table>
+        <div class="total">
+            Total: $<span id="total-price">0</span>
+        </div>
+        <button class="finalize" onclick="finalizeSale()">Finalizar Venta</button>
+    </section>
+
+    <script>
+        const cart = [];
+
+        function addToCart(product, price) {
+            // Busca si el producto ya está en el carrito
+            const existingProduct = cart.find(item => item.name === product);
+            if (existingProduct) {
+                existingProduct.quantity++;
+                existingProduct.total = existingProduct.quantity * existingProduct.price;
+            } else {
+                cart.push({ name: product, price: price, quantity: 1, total: price });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const tableBody = document.getElementById('cart-table').querySelector('tbody');
+            tableBody.innerHTML = ''; // Limpia el contenido actual
+            let totalPrice = 0;
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>$${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.total}</td>
+                    <td><button onclick="removeFromCart(${index})">Eliminar</button></td>
+                `;
+                tableBody.appendChild(row);
+                totalPrice += item.total;
+            });
+
+            document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1); // Elimina el producto del carrito
+            updateCart();
+        }
+
+        function finalizeSale() {
+            if (cart.length === 0) {
+                alert('El carrito está vacío.');
+                return;
+            }
+            alert(`Venta finalizada. Total a pagar: $${document.getElementById('total-price').innerText}`);
+            cart.length = 0; // Vacía el carrito
+            updateCart();
+        }
+    </script>
+</body>
+</html>

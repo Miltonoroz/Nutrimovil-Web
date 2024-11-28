@@ -3,50 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nutrimovil</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Si tienes un archivo CSS -->
+    <title>Punto de Venta - Nutrimovil</title>
     <style>
-        /* Estilo para la cabecera */
-        header {
-            display: flex; /* Flexbox para organizar la imagen y el texto en una fila */
-            align-items: center; /* Alinea verticalmente la imagen con el texto */
-            padding: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
         }
 
-        /* Estilo para la imagen */
-        img {
-            max-width: 200px; /* Ajusta el tamaño de la imagen */
-            height: auto; /* Mantiene la proporción de la imagen */
-            margin-right: 40px; /* Espacio entre la imagen y el texto */
-            border: 2px solid black; /* Agrega el borde negro */
-            padding: 5px; /* Espacio interno entre la imagen y el borde */
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra opcional para un efecto visual */
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .product-list, .cart {
+            margin: 20px 0;
+        }
+
+        .product-list button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .product-list button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .total span {
+            font-weight: bold;
+        }
+
+        button.finalize {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button.finalize:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <header>
-        <!-- Imagen del logo -->
-        <img src="logoN.jpg" alt="Logo de Nutrimovil">
-        
-        <!-- Texto de bienvenida -->
-        <div>
-            <h1>Bienvenido a Nutrimovil</h1>
-            <p>Comida saludable y rápida, ¡en movimiento!</p>
-        </div>
+        <h1>Punto de Venta - Nutrimovil</h1>
     </header>
 
-    <section>
+    <!-- Lista de productos -->
+    <section class="product-list">
         <h2>Productos</h2>
-        <ul>
-            <li>Baguetes</li>
-            <li>Tortas</li>
-            <li>Burritos</li>
-        </ul>
+        <button onclick="addToCart('Baguette', 50)">Baguette - $50</button>
+        <button onclick="addToCart('Torta', 40)">Torta - $40</button>
+        <button onclick="addToCart('Burrito', 30)">Burrito - $30</button>
     </section>
 
-    <footer>
-        <p>Contáctanos: info@nutrimovil.com</p>
-    </footer>
+    <!-- Carrito de compras -->
+    <section class="cart">
+        <h2>Carrito de Compras</h2>
+        <table id="cart-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas del carrito aparecerán aquí -->
+            </tbody>
+        </table>
+        <div class="total">
+            Total: $<span id="total-price">0</span>
+        </div>
+        <button class="finalize" onclick="finalizeSale()">Finalizar Venta</button>
+    </section>
+
+    <script>
+        const cart = [];
+
+        function addToCart(product, price) {
+            // Busca si el producto ya está en el carrito
+            const existingProduct = cart.find(item => item.name === product);
+            if (existingProduct) {
+                existingProduct.quantity++;
+                existingProduct.total = existingProduct.quantity * existingProduct.price;
+            } else {
+                cart.push({ name: product, price: price, quantity: 1, total: price });
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const tableBody = document.getElementById('cart-table').querySelector('tbody');
+            tableBody.innerHTML = ''; // Limpia el contenido actual
+            let totalPrice = 0;
+
+            cart.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>$${item.price}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.total}</td>
+                    <td><button onclick="removeFromCart(${index})">Eliminar</button></td>
+                `;
+                tableBody.appendChild(row);
+                totalPrice += item.total;
+            });
+
+            document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1); // Elimina el producto del carrito
+            updateCart();
+        }
+
+        function finalizeSale() {
+            if (cart.length === 0) {
+                alert('El carrito está vacío.');
+                return;
+            }
+            alert(`Venta finalizada. Total a pagar: $${document.getElementById('total-price').innerText}`);
+            cart.length = 0; // Vacía el carrito
+            updateCart();
+        }
+    </script>
 </body>
 </html>

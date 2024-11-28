@@ -6,16 +6,17 @@
     <title>Nutrimovil</title>
     <link rel="stylesheet" href="styles.css"> <!-- Si tienes un archivo CSS -->
     <style>
-        /* Estilo para centrar la imagen y el contenido */
+        /* Estilo para la imagen en la parte superior izquierda */
         header {
-            text-align: center; /* Centra horizontalmente el texto e imágenes */
-            padding: 20px;
+            display: flex; /* Flexbox para organizar la imagen y el texto en una fila */
+            align-items: center; /* Alinea verticalmente la imagen con el texto */
+            padding: 10px;
         }
 
         img {
-            max-width: 200px; /* Ajusta el tamaño de la imagen */
-            height: auto;    /* Mantiene la proporción de la imagen */
-            margin: 10px 0; /* Agrega espacio alrededor de la imagen */
+            max-width: 100px; /* Ajusta el tamaño de la imagen */
+            height: auto; /* Mantiene la proporción de la imagen */
+            margin-right: 20px; /* Espacio entre la imagen y el texto */
         }
     </style>
 </head>
@@ -24,8 +25,11 @@
         <!-- Imagen del logo -->
         <img src="logoN.jpg" alt="Logo de Nutrimovil">
         
-        <h1>Bienvenido a Nutrimovil</h1>
-        <p>Comida saludable y rápida, ¡en movimiento!</p>
+        <!-- Texto de bienvenida -->
+        <div>
+            <h1>Bienvenido a Nutrimovil</h1>
+            <p>Comida saludable y rápida, ¡en movimiento!</p>
+        </div>
     </header>
 
     <section>
